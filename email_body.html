@@ -1,47 +1,138 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Your Email Title</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #ffffff;
-            color: #333333;
-            padding: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            border: 1px solid #ddd;
-            padding: 30px;
-            border-radius: 6px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #004aad;
-        }
-        .footer {
-            margin-top: 40px;
-            font-size: 0.9em;
-            color: #888888;
-        }
-        a {
-            color: #004aad;
-            text-decoration: none;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Hello!</h1>
-        <p>This is a customizable HTML email template you can modify for your message.</p>
-        <p>You can include <strong>bold text</strong>, <em>italic text</em>, <a href="#">links</a>, and more.</p>
-        <p>Just replace this content with your actual email body.</p>
+# M365 Bulk Emailer
 
-        <div class="footer">
-            <p>If you have questions, please contact us at <a href="mailto:your@email.com">your@email.com</a>.</p>
-        </div>
-    </div>
-</body>
-</html>
+This Python script automates the process of sending HTML-formatted emails in bulk via Microsoft 365 (Graph API). Ideal for sending newsletters, event updates, or organizational announcements.
+
+---
+
+## Features
+
+- Sends HTML emails to multiple recipients using M365 Graph API
+- Credentials are secured via environment variables
+- Reads contact list from CSV
+- Supports optional BCC
+- Uses an external HTML file for email content
+- Minimal dependencies, no Exchange Online license required
+
+---
+
+## File Structure
+
+```
+.
+├── m365-bulk-emailer.py      # Main script
+├── email_body.html           # HTML content for email
+├── test.csv                  # CSV file with recipient data
+├── .env                      # (Optional) Local environment variable file
+└── README.md                 # This file
+```
+
+---
+
+## Setup
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/jasonpit/m365-bulk-eMailer.git
+cd m365-bulk-eMailer
+```
+
+### 2. Create an Azure App Registration
+
+1. Go to [Azure Portal](https://portal.azure.com)
+2. Navigate to Azure Active Directory > App registrations > New registration
+3. Name the app (e.g., "M365 Bulk Emailer")
+4. Set the supported account type (usually "Single tenant")
+5. Redirect URI is not required for this script, so leave it blank or use `http://localhost` temporarily
+6. Click "Register"
+7. Note the **Application (client) ID**, **Directory (tenant) ID**, and generate a **Client Secret**:
+   - Go to "Certificates & secrets"
+   - Click "New client secret"
+   - Give it a name and choose an expiration period
+   - Copy the value immediately (you will not see it again)
+
+8. API permissions:
+   - Go to "API permissions" > "Add a permission"
+   - Choose "Microsoft Graph"
+   - Choose "Application permissions"
+   - Select `Mail.Send`
+   - Click "Add permissions"
+   - Click "Grant admin consent"
+
+### 3. Create a `.env` file
+
+```ini
+M365_CLIENT_ID=your-client-id
+M365_CLIENT_SECRET=your-client-secret
+M365_TENANT_ID=your-tenant-id
+M365_SENDER_EMAIL=your-sender@yourdomain.com
+M365_BCC_EMAIL=optional-bcc@yourdomain.com
+```
+
+> Make sure to never commit this file — it's excluded in `.gitignore`.
+
+### 4. Install dependencies
+
+```bash
+pip install requests pandas python-dotenv
+```
+
+### 5. Prepare your CSV
+
+The script expects a file named `test.csv` like this:
+
+```csv
+email
+recipient1@example.com
+recipient2@example.com
+```
+
+### 6. Add your HTML body
+
+Create a file named `email_body.html` with the content you want to send. You can use standard HTML tags.
+
+---
+
+## Run the Script
+
+```bash
+python m365-bulk-emailer.py
+```
+
+The script will:
+- Load environment variables
+- Read email content from `email_body.html`
+- Parse recipient emails from `test.csv`
+- Send emails one by one using the Microsoft Graph API
+
+---
+
+## Security Notes
+
+- Avoid hardcoding secrets.
+- Use `.env` or CI/CD secrets management.
+- Do not check in real email lists to public repos.
+
+---
+
+## To Do / Ideas
+
+- Retry logic on failure
+- Email tracking or logging
+- Rate limiting or throttling
+- HTML template support with Jinja2
+- GUI for non-technical users
+
+---
+
+## License
+
+MIT License. See `LICENSE` for details.
+
+---
+
+## Author
+
+Jason Pittman  
+GitHub: https://github.com/jasonpit  
+LinkedIn: https://linkedin.com/in/jason-pittman

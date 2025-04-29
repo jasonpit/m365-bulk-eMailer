@@ -4,23 +4,23 @@ This Python script automates the process of sending HTML-formatted emails in bul
 
 ---
 
-## 🔧 Features
+## Features
 
-- 📤 Sends HTML emails to multiple recipients using M365 Graph API
-- 🛡️ Credentials are secured via environment variables
-- ✅ Reads contact list from CSV
-- 📎 Supports optional BCC
-- 📑 Uses an external HTML file for email content
-- 🧪 Minimal dependencies, no Exchange Online license required
+- Sends HTML emails to multiple recipients using M365 Graph API
+- Credentials are secured via environment variables
+- Reads contact list from CSV
+- Supports optional BCC
+- Uses an external HTML file for email content
+- Minimal dependencies, no Exchange Online license required
 
 ---
 
-## 📁 File Structure
+## File Structure
 
 ```text
 .
 ├── m365-bulk-emailer.py      # Main script
-├── email_body.html           # HTML content for email
+├── email_body.html           # Editable HTML template used as the email body
 ├── emaillist.csv                  # CSV file with recipient data
 ├── .env                      # (Optional) Local environment variable file
 └── README.md                 # This file
@@ -28,7 +28,7 @@ This Python script automates the process of sending HTML-formatted emails in bul
 
 ---
 
-## ⚙️ Setup
+## Setup
 
 ### 1. Clone the repo
 
@@ -39,6 +39,30 @@ cd m365-bulk-eMailer
 
 ### 2. Create an `.env` file
 
+Before creating this file, you must register an application in Azure Active Directory to get the necessary credentials.
+
+#### Steps to Create Azure App Registration:
+
+1. Go to [Azure Portal](https://portal.azure.com)
+2. Navigate to **Azure Active Directory > App registrations > New registration**
+3. Name the app (e.g., "M365 Bulk Emailer")
+4. Choose "Single tenant" for most cases
+5. Redirect URI is not required for this script (leave it blank or use `http://localhost`)
+6. Click **Register**
+7. Once registered, note the following values:
+   - **Application (client) ID** → use for `M365_CLIENT_ID`
+   - **Directory (tenant) ID** → use for `M365_TENANT_ID`
+8. Under **Certificates & secrets**, create a **New client secret**
+   - Copy the value (it will not be shown again) → use for `M365_CLIENT_SECRET`
+9. Under **API permissions**, click **Add a permission**
+   - Choose **Microsoft Graph** > **Application permissions**
+   - Add `Mail.Send`
+   - Click **Grant admin consent**
+
+#### Create the `.env` file
+
+Now that you have the required values, create a `.env` file in the project root:
+
 ```ini
 M365_CLIENT_ID=your-client-id
 M365_CLIENT_SECRET=your-client-secret
@@ -47,7 +71,7 @@ M365_SENDER_EMAIL=your-sender@yourdomain.com
 M365_BCC_EMAIL=optional-bcc@yourdomain.com
 ```
 
-> Make sure to **never commit** this file — it's excluded in `.gitignore`.
+> This file is excluded by `.gitignore` to keep your credentials secure.
 
 ### 3. Install dependencies
 
@@ -85,7 +109,7 @@ The script will:
 
 ---
 
-## 🧠 How It Works
+## How It Works
 
 1. **Access Token**: Authenticates with Microsoft using the Client Credentials Flow.
 2. **Reads HTML**: Loads your email content.
@@ -93,7 +117,7 @@ The script will:
 
 ---
 
-## 🔐 Security Notes
+## Security Notes
 
 - Avoid hardcoding secrets.
 - Use `.env` or CI/CD secrets management.
@@ -101,7 +125,7 @@ The script will:
 
 ---
 
-## 📌 To Do / Ideas
+## To Do / Ideas
 
 - Retry logic on failure
 - Email tracking or logging
@@ -111,13 +135,13 @@ The script will:
 
 ---
 
-## 📄 License
+## License
 
 MIT License. See `LICENSE` for details.
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 Jason Pittman  
 [GitHub](https://github.com/jasonpit) | [LinkedIn](https://linkedin.com/in/jason-pittman)
